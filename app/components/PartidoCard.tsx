@@ -6,20 +6,25 @@ export default function PartidoCard({
 }: {
   partido: any;
 }) {
-function formatearFecha(fecha: string) {
-  const d = new Date(fecha);
 
-  const fechaTexto =
-    d.toLocaleDateString("es-ES");
+  function formatearFecha(fecha: string) {
+    const d = new Date(fecha);
 
-  const horaTexto =
-    d.toLocaleTimeString("es-ES", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const fechaTexto =
+      d.toLocaleDateString("es-ES", {
+        timeZone: "Europe/Madrid",
+      });
 
-  return `${fechaTexto} ${horaTexto}`;
-}
+    const horaTexto =
+      d.toLocaleTimeString("es-ES", {
+        timeZone: "Europe/Madrid",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    return `${fechaTexto} ${horaTexto}`;
+  }
+
 
   function tiempoRestante(fecha: string) {
     const ahora = new Date();
