@@ -75,10 +75,13 @@ function formatearFecha(fecha: string) {
 
   const ahora = new Date();
 
-  const abierto =
-    ahora >= apertura &&
-    ahora < fecha &&
-    partido.estado !== "finalizado";
+const abierto =
+  (
+    partido.id === 11 ||
+    ahora >= apertura
+  ) &&
+  ahora < fecha &&
+  partido.estado !== "finalizado";
 
   return (
     <div

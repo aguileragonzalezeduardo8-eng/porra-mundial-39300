@@ -157,12 +157,12 @@ apertura.setHours(
   0
 );
 
-      return (
-        ahora >= apertura &&
-        ahora < fecha
-      );
-    }) || [];
-
+ return (
+  (partido.id === 11 ||
+    ahora >= apertura) &&
+  ahora < fecha
+);
+}) || [];
 
   const partidosProximos =
     partidos?.filter((partido) => {
@@ -189,8 +189,11 @@ apertura.setHours(
   0,
   0
 );
-      return ahora < apertura;
-    }) || [];
+return (
+  partido.id !== 11 &&
+  ahora < apertura
+);
+}) || [];
 
   const partidosFinalizados =
     partidos?.filter(

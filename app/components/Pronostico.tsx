@@ -157,8 +157,9 @@ export default function Pronostico({
     0
   );
 
-  const pronosticoDisponible =
-    ahora >= fechaApertura;
+ const pronosticoDisponible =
+  partidoId === 11 ||
+  ahora >= fechaApertura;
 
   if (estado === "finalizado") {
     let puntos = 0;
