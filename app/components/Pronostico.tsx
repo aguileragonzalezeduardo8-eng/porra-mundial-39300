@@ -70,40 +70,66 @@ export default function Pronostico({
     const participanteId =
       localStorage.getItem("id");
 
-    if (!participanteId) {
+    const token =
+      localStorage.getItem("token");
+
+    if (!participanteId || !token) {
       setMensaje(
-        "Debes registrarte primero"
+        "❌ Debes registrarte primero"
       );
       return;
     }
 
-    const respuesta = await fetch(
-      "/api/pronosticos",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          participante_id:
-            Number(participanteId),
-          partido_id: partidoId,
-          goles_local:
-            Number(golesLocal),
-          goles_visitante:
-            Number(golesVisitante),
-        }),
-      }
-    );
-
-    if (respuesta.ok) {
+    if (
+      golesLocal === "" ||
+      golesVisitante === ""
+    ) {
       setMensaje(
-        "✅ Pronóstico guardado"
+        "❌ Introduce ambos resultados"
       );
-    } else {
+      return;
+    }
+
+    try {
+      const respuesta = await fetch(
+        "/api/pronosticos",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            participante_id:
+              Number(participanteId),
+            token,
+            partido_id: partidoId,
+            goles_local:
+              Number(golesLocal),
+            goles_visitante:
+              Number(golesVisitante),
+          }),
+        }
+      );
+
+      const resultado =
+        await respuesta.json();
+
+      if (respuesta.ok) {
+        setMensaje(
+          "✅ Pronóstico guardado"
+        );
+      } else {
+        setMensaje(
+          resultado.error ||
+            "❌ Error al guardar"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
       setMensaje(
-        "❌ Error al guardar"
+        "❌ Error de conexión"
       );
     }
   }
@@ -118,12 +144,18 @@ export default function Pronostico({
   const partidoEmpezado =
     fecha <= ahora;
 
-  // Se abre el día anterior
   const fechaApertura = new Date(fecha);
+
   fechaApertura.setDate(
     fechaApertura.getDate() - 1
   );
-  fechaApertura.setHours(0, 0, 0, 0);
+
+  fechaApertura.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
   const pronosticoDisponible =
     ahora >= fechaApertura;
@@ -194,7 +226,8 @@ export default function Pronostico({
           borderRadius: "8px",
         }}
       >
-        📅 <strong>
+        📅{" "}
+        <strong>
           Disponible desde el día anterior
         </strong>
       </div>
@@ -212,7 +245,8 @@ export default function Pronostico({
           borderRadius: "8px",
         }}
       >
-        🔒 <strong>
+        🔒{" "}
+        <strong>
           Pronósticos cerrados
         </strong>
       </div>

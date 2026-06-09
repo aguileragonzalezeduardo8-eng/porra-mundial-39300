@@ -1,7 +1,13 @@
+import Link from "next/link";
+
 export default function Hero({
   participantes,
+  pronosticos,
+  partidosFinalizados,
 }: {
   participantes: number;
+  pronosticos: number;
+  partidosFinalizados: number;
 }) {
   return (
     <div
@@ -59,7 +65,7 @@ export default function Hero({
         style={{
           fontSize: "16px",
           opacity: 0.9,
-          marginBottom: "20px",
+          marginBottom: "25px",
         }}
       >
         🌎 Estados Unidos · México · Canadá
@@ -67,15 +73,64 @@ export default function Hero({
 
       <div
         style={{
-          display: "inline-block",
-          background: "rgba(255,255,255,0.15)",
-          padding: "10px 18px",
-          borderRadius: "999px",
-          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "center",
+          gap: "15px",
+          flexWrap: "wrap",
+          marginBottom: "25px",
         }}
       >
-        👥 {participantes} participantes
+        <div
+          style={{
+            background:
+              "rgba(255,255,255,0.15)",
+            padding: "10px 18px",
+            borderRadius: "999px",
+            fontWeight: "bold",
+          }}
+        >
+          👥 {participantes} participantes
+        </div>
+
+        <div
+          style={{
+            background:
+              "rgba(255,255,255,0.15)",
+            padding: "10px 18px",
+            borderRadius: "999px",
+            fontWeight: "bold",
+          }}
+        >
+          ⚽ {pronosticos} pronósticos
+        </div>
+
+        <div
+          style={{
+            background:
+              "rgba(255,255,255,0.15)",
+            padding: "10px 18px",
+            borderRadius: "999px",
+            fontWeight: "bold",
+          }}
+        >
+          🏁 {partidosFinalizados} finalizados
+        </div>
       </div>
+
+      <Link
+        href="/perfil"
+        style={{
+          display: "inline-block",
+          background: "white",
+          color: "#1e40af",
+          padding: "12px 24px",
+          borderRadius: "10px",
+          fontWeight: "bold",
+          textDecoration: "none",
+        }}
+      >
+        👤 Mi perfil
+      </Link>
     </div>
   );
 }

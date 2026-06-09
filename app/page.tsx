@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { supabase } from "./lib/supabase";
 import Registro from "./components/Registro";
 import Hero from "./components/Hero";
@@ -22,68 +23,181 @@ export default async function Home() {
     .from("pronosticos")
     .select("*");
 
+  const totalPronosticos =
+    pronosticos?.length ?? 0;
+
+  const totalPartidosFinalizados =
+    partidos?.filter(
+      (p) => p.estado === "finalizado"
+    ).length ?? 0;
+
   const clasificacion =
     participantes?.map((participante) => {
       let puntos = 0;
+      let exactos = 0;
+      let signos = 0;
 
       const pronosticosParticipante =
         pronosticos?.filter(
-          (p) => p.participante_id === participante.id
+          (p) =>
+            p.participante_id ===
+            participante.id
         ) || [];
 
-      pronosticosParticipante.forEach((pronostico) => {
-        const partido = partidos?.find(
-          (p) => p.id === pronostico.partido_id
-        );
+      pronosticosParticipante.forEach(
+        (pronostico) => {
+          const partido =
+            partidos?.find(
+              (p) =>
+                p.id ===
+                pronostico.partido_id
+            );
 
-        if (!partido || partido.estado !== "finalizado") {
-          return;
+          if (
+            !partido ||
+            partido.estado !==
+              "finalizado"
+          ) {
+            return;
+          }
+
+          const realLocal =
+            partido.goles_local;
+
+          const realVisitante =
+            partido.goles_visitante;
+
+          const pronLocal =
+            pronostico.goles_local;
+
+          const pronVisitante =
+            pronostico.goles_visitante;
+
+          if (
+            realLocal === pronLocal &&
+            realVisitante ===
+              pronVisitante
+          ) {
+            puntos += 5;
+            exactos += 1;
+            return;
+          }
+
+          const realSigno =
+            realLocal >
+            realVisitante
+              ? "1"
+              : realLocal <
+                realVisitante
+              ? "2"
+              : "X";
+
+          const pronSigno =
+            pronLocal >
+            pronVisitante
+              ? "1"
+              : pronLocal <
+                pronVisitante
+              ? "2"
+              : "X";
+
+          if (
+            realSigno ===
+            pronSigno
+          ) {
+            puntos += 2;
+            signos += 1;
+          }
         }
-
-        const realLocal = partido.goles_local;
-        const realVisitante = partido.goles_visitante;
-
-        const pronLocal = pronostico.goles_local;
-        const pronVisitante = pronostico.goles_visitante;
-
-        if (
-          realLocal === pronLocal &&
-          realVisitante === pronVisitante
-        ) {
-          puntos += 5;
-          return;
-        }
-
-        const realSigno =
-          realLocal > realVisitante
-            ? "1"
-            : realLocal < realVisitante
-            ? "2"
-            : "X";
-
-        const pronSigno =
-          pronLocal > pronVisitante
-            ? "1"
-            : pronLocal < pronVisitante
-            ? "2"
-            : "X";
-
-        if (realSigno === pronSigno) {
-          puntos += 2;
-        }
-      });
+      );
 
       return {
         id: participante.id,
-        nombre: participante.nombre,
+        nombre:
+          participante.nombre,
         puntos,
-        pronosticos: pronosticosParticipante.length,
+        exactos,
+        signos,
+        pronosticos:
+          pronosticosParticipante.length,
       };
     }) || [];
 
-  clasificacion.sort((a, b) => b.puntos - a.puntos);
+  clasificacion.sort(
+    (a, b) => b.puntos - a.puntos
+  );
 
   const lider = clasificacion[0];
+
+  const ahora = new Date();
+
+  const partidosPronosticables =
+    partidos?.filter((partido) => {
+      if (
+        partido.estado ===
+        "finalizado"
+      ) {
+        return false;
+      }
+
+      const fecha = new Date(
+        partido.fecha_partido
+      );
+
+      const apertura =
+        new Date(fecha);
+
+      apertura.setDate(
+        apertura.getDate() - 1
+      );
+apertura.setHours(
+  0,
+  0,
+  0,
+  0
+);
+
+      return (
+        ahora >= apertura &&
+        ahora < fecha
+      );
+    }) || [];
+
+
+  const partidosProximos =
+    partidos?.filter((partido) => {
+      if (
+        partido.estado ===
+        "finalizado"
+      ) {
+        return false;
+      }
+
+      const fecha = new Date(
+        partido.fecha_partido
+      );
+
+      const apertura =
+        new Date(fecha);
+
+      apertura.setDate(
+        apertura.getDate() - 1
+      );
+apertura.setHours(
+  0,
+  0,
+  0,
+  0
+);
+      return ahora < apertura;
+    }) || [];
+
+  const partidosFinalizados =
+    partidos?.filter(
+      (partido) =>
+        partido.estado ===
+        "finalizado"
+    ) || [];
 
   return (
     <main
@@ -93,25 +207,38 @@ export default async function Home() {
         padding: "30px",
       }}
     >
-      <Hero participantes={count ?? 0} />
+      <Hero
+        participantes={count ?? 0}
+        pronosticos={
+          totalPronosticos
+        }
+        partidosFinalizados={
+          totalPartidosFinalizados
+        }
+      />
 
       <Registro />
 
       {lider && (
         <div
           style={{
-            background: "#fff7d6",
-            border: "2px solid #facc15",
-            borderRadius: "12px",
+            background:
+              "#fff7d6",
+            border:
+              "2px solid #facc15",
+            borderRadius:
+              "12px",
             padding: "20px",
             marginTop: "30px",
-            marginBottom: "30px",
+            marginBottom:
+              "30px",
           }}
         >
           <h2
             style={{
               fontSize: "22px",
-              fontWeight: "bold",
+              fontWeight:
+                "bold",
             }}
           >
             🏆 Líder actual
@@ -132,26 +259,42 @@ export default async function Home() {
         </div>
       )}
 
-      <section style={{ marginTop: "40px" }}>
+      <section
+        style={{
+          marginTop: "40px",
+        }}
+      >
         <h2
           style={{
             fontSize: "28px",
-            fontWeight: "bold",
-            marginBottom: "20px",
+            fontWeight:
+              "bold",
+            marginBottom:
+              "20px",
           }}
         >
           🏆 Podio
         </h2>
 
-        <Top3 clasificacion={clasificacion} />
+        <Top3
+          clasificacion={
+            clasificacion
+          }
+        />
       </section>
 
-      <section style={{ marginTop: "40px" }}>
+      <section
+        style={{
+          marginTop: "40px",
+        }}
+      >
         <h2
           style={{
             fontSize: "28px",
-            fontWeight: "bold",
-            marginBottom: "20px",
+            fontWeight:
+              "bold",
+            marginBottom:
+              "20px",
           }}
         >
           📊 Clasificación completa
@@ -159,66 +302,275 @@ export default async function Home() {
 
         <div
           style={{
-            border: "1px solid #ddd",
-            borderRadius: "12px",
-            overflow: "hidden",
+            border:
+              "1px solid #ddd",
+            borderRadius:
+              "12px",
+            overflow:
+              "hidden",
           }}
         >
-          {clasificacion.map((usuario, index) => (
-            <div
-              key={usuario.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "16px",
-                borderBottom:
-                  index !== clasificacion.length - 1
-                    ? "1px solid #eee"
-                    : "none",
-              }}
-            >
-              <div>
-                {index + 1}. {usuario.nombre}
-              </div>
+          {clasificacion.map(
+            (
+              usuario,
+              index
+            ) => {
+              let puesto = `${
+                index + 1
+              }`;
 
-              <strong>
-                {usuario.puntos} pts
-              </strong>
-            </div>
-          ))}
+              if (index === 0)
+                puesto = "🥇";
+
+              if (index === 1)
+                puesto = "🥈";
+
+              if (index === 2)
+                puesto = "🥉";
+
+              const diferencia =
+                lider
+                  ? lider.puntos -
+                    usuario.puntos
+                  : 0;
+
+              return (
+                <div
+                  key={
+                    usuario.id
+                  }
+                  style={{
+                    display:
+                      "flex",
+                    justifyContent:
+                      "space-between",
+                    alignItems:
+                      "center",
+                    padding:
+                      "18px",
+                    borderBottom:
+                      index !==
+                      clasificacion.length -
+                        1
+                        ? "1px solid #eee"
+                        : "none",
+                    background:
+                      index ===
+                      0
+                        ? "#fefce8"
+                        : "white",
+                  }}
+                >
+                  <div>
+                    <Link
+  href={`/participante/${usuario.id}`}
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <div
+    style={{
+      fontWeight:
+        "bold",
+      fontSize:
+        "18px",
+      cursor:
+        "pointer",
+    }}
+  >
+    {puesto}{" "}
+    {usuario.nombre}
+  </div>
+</Link>
+
+                    <div
+                      style={{
+                        marginTop:
+                          "4px",
+                        fontSize:
+                          "13px",
+                        color:
+                          "#666",
+                      }}
+                    >
+                      🎯{" "}
+                      {
+                        usuario.exactos
+                      }{" "}
+                      exactos · ⚽{" "}
+                      {
+                        usuario.signos
+                      }{" "}
+                      signos · 📝{" "}
+                      {
+                        usuario.pronosticos
+                      }{" "}
+                      pronósticos
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      textAlign:
+                        "right",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize:
+                          "22px",
+                        fontWeight:
+                          "bold",
+                      }}
+                    >
+                      {
+                        usuario.puntos
+                      }{" "}
+                      pts
+                    </div>
+
+                    {index >
+                      0 && (
+                      <div
+                        style={{
+                          color:
+                            "#666",
+                          fontSize:
+                            "13px",
+                        }}
+                      >
+                        -
+                        {
+                          diferencia
+                        }{" "}
+                        del líder
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+          )}
         </div>
       </section>
 
-      <section style={{ marginTop: "50px" }}>
+      <section
+        style={{
+          marginTop: "50px",
+        }}
+      >
         <h2
           style={{
             fontSize: "28px",
-            fontWeight: "bold",
-            marginBottom: "20px",
+            fontWeight:
+              "bold",
+            marginBottom:
+              "20px",
           }}
         >
-          ⚽ Partidos
+          🔥 Pronosticables ahora
         </h2>
 
-        {!partidos || partidos.length === 0 ? (
-          <p>No hay partidos cargados todavía.</p>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "20px",
-            }}
-          >
-            {partidos.map((partido) => (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "20px",
+            marginBottom:
+              "50px",
+          }}
+        >
+          {partidosPronosticables.map(
+            (
+              partido
+            ) => (
               <PartidoCard
-                key={partido.id}
-                partido={partido}
+                key={
+                  partido.id
+                }
+                partido={
+                  partido
+                }
               />
-            ))}
-          </div>
-        )}
+            )
+          )}
+        </div>
+
+        <h2
+          style={{
+            fontSize: "28px",
+            fontWeight:
+              "bold",
+            marginBottom:
+              "20px",
+          }}
+        >
+          📅 Próximamente
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "20px",
+            marginBottom:
+              "50px",
+          }}
+        >
+          {partidosProximos.map(
+            (
+              partido
+            ) => (
+              <PartidoCard
+                key={
+                  partido.id
+                }
+                partido={
+                  partido
+                }
+              />
+            )
+          )}
+        </div>
+
+        <h2
+          style={{
+            fontSize: "28px",
+            fontWeight:
+              "bold",
+            marginBottom:
+              "20px",
+          }}
+        >
+          🏁 Finalizados
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {partidosFinalizados.map(
+            (
+              partido
+            ) => (
+              <PartidoCard
+                key={
+                  partido.id
+                }
+                partido={
+                  partido
+                }
+              />
+            )
+          )}
+        </div>
       </section>
     </main>
   );

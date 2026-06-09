@@ -1,5 +1,32 @@
 import { supabase } from "../../lib/supabase";
 
+export async function GET() {
+  try {
+    const { data, error } = await supabase
+      .from("partidos")
+      .select("*")
+      .order("fecha_partido", {
+        ascending: true,
+      });
+
+    if (error) {
+      return Response.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return Response.json(data);
+  } catch (error) {
+    console.error(error);
+
+    return Response.json(
+      { error: "Error general" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

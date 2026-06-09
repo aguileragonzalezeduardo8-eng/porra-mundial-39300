@@ -8,8 +8,7 @@ export default function Registro() {
   const [usuario, setUsuario] = useState<string | null>(null);
 
   useEffect(() => {
-    const nombreGuardado =
-      localStorage.getItem("nombre");
+    const nombreGuardado = localStorage.getItem("nombre");
 
     if (nombreGuardado) {
       setUsuario(nombreGuardado);
@@ -18,9 +17,7 @@ export default function Registro() {
 
   async function registrar() {
     if (!nombre.trim()) {
-      setMensaje(
-        "⚠️ Introduce tu nombre"
-      );
+      setMensaje("Introduce tu nombre");
       return;
     }
 
@@ -59,19 +56,12 @@ export default function Registro() {
         );
 
         window.location.reload();
-        return;
-      }
-
-      if (respuesta.status === 409) {
+      } else {
         setMensaje(
-          "❌ Ya existe un participante con ese nombre"
+          participante.error ||
+            "❌ Error al inscribirse"
         );
-        return;
       }
-
-      setMensaje(
-        "❌ Error al inscribirse"
-      );
     } catch (error) {
       console.error(error);
 
@@ -89,14 +79,22 @@ export default function Registro() {
         </h2>
 
         <p className="mt-2">
-          Ya estás inscrito en la porra.
+          Ya estás inscrito en la
+          porra.
         </p>
 
         <button
           onClick={() => {
-            localStorage.removeItem("id");
-            localStorage.removeItem("token");
-            localStorage.removeItem("nombre");
+            localStorage.removeItem(
+              "id"
+            );
+            localStorage.removeItem(
+              "token"
+            );
+            localStorage.removeItem(
+              "nombre"
+            );
+
             window.location.reload();
           }}
           className="mt-4 bg-red-600 text-white px-4 py-2 rounded"
@@ -110,7 +108,9 @@ export default function Registro() {
   return (
     <div className="border rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">
-        Únete a la porra y recuerda pagar antes de que empiece el Mundial, cabrón
+        Únete a la porra y recuerda
+        pagar antes de que empiece el
+        Mundial, cabrón
       </h2>
 
       <input
@@ -131,7 +131,7 @@ export default function Registro() {
       </button>
 
       {mensaje && (
-        <p className="mt-4 font-semibold">
+        <p className="mt-4">
           {mensaje}
         </p>
       )}

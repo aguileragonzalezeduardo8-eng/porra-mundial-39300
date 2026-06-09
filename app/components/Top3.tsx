@@ -1,133 +1,109 @@
+import Link from "next/link";
 export default function Top3({
   clasificacion,
 }: {
-  clasificacion: {
-    id: number;
-    nombre: string;
-    puntos: number;
-  }[];
+  clasificacion: any[];
 }) {
-  const primero = clasificacion[0];
-  const segundo = clasificacion[1];
-  const tercero = clasificacion[2];
+  const top3 = clasificacion.slice(0, 3);
+
+  if (top3.length === 0) {
+    return null;
+  }
+
+  const estilos = [
+    {
+      emoji: "🥇",
+      color: "#facc15",
+      altura: "220px",
+    },
+    {
+      emoji: "🥈",
+      color: "#d1d5db",
+      altura: "180px",
+    },
+    {
+      emoji: "🥉",
+      color: "#d97706",
+      altura: "140px",
+    },
+  ];
 
   return (
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns:
-          "repeat(auto-fit, minmax(180px, 1fr))",
-        gap: "16px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        gap: "20px",
+        flexWrap: "wrap",
         marginBottom: "30px",
       }}
     >
-      {primero && (
+      {top3.map((usuario, index) => (
         <div
+          key={usuario.id}
           style={{
-            background: "#fef3c7",
-            border: "2px solid #facc15",
-            borderRadius: "12px",
-            padding: "20px",
-            textAlign: "center",
+            width: "220px",
+            height: estilos[index].altura,
+            background: estilos[index].color,
+            borderRadius: "16px 16px 0 0",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow:
+              "0 10px 25px rgba(0,0,0,0.15)",
           }}
         >
-          <div style={{ fontSize: "40px" }}>
-            🥇
-          </div>
-
           <div
             style={{
-              fontWeight: "bold",
-              fontSize: "18px",
-              marginTop: "10px",
+              fontSize: "40px",
+              marginBottom: "10px",
             }}
           >
-            {primero.nombre}
+            {estilos[index].emoji}
           </div>
+
+          <Link
+  href={`/participante/${usuario.id}`}
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <div
+    style={{
+      fontWeight: "bold",
+      fontSize: "18px",
+      textAlign: "center",
+      padding: "0 10px",
+      cursor: "pointer",
+    }}
+  >
+    {usuario.nombre}
+  </div>
+</Link>
 
           <div
             style={{
-              marginTop: "8px",
+              marginTop: "10px",
               fontSize: "22px",
               fontWeight: "bold",
             }}
           >
-            {primero.puntos} pts
+            {usuario.puntos} pts
+          </div>
+
+          <div
+            style={{
+              marginTop: "5px",
+              fontSize: "14px",
+            }}
+          >
+            {usuario.pronosticos} pronósticos
           </div>
         </div>
-      )}
-
-      {segundo && (
-        <div
-          style={{
-            background: "#f3f4f6",
-            border: "2px solid #d1d5db",
-            borderRadius: "12px",
-            padding: "20px",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontSize: "40px" }}>
-            🥈
-          </div>
-
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "18px",
-              marginTop: "10px",
-            }}
-          >
-            {segundo.nombre}
-          </div>
-
-          <div
-            style={{
-              marginTop: "8px",
-              fontSize: "22px",
-              fontWeight: "bold",
-            }}
-          >
-            {segundo.puntos} pts
-          </div>
-        </div>
-      )}
-
-      {tercero && (
-        <div
-          style={{
-            background: "#fed7aa",
-            border: "2px solid #fb923c",
-            borderRadius: "12px",
-            padding: "20px",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontSize: "40px" }}>
-            🥉
-          </div>
-
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "18px",
-              marginTop: "10px",
-            }}
-          >
-            {tercero.nombre}
-          </div>
-
-          <div
-            style={{
-              marginTop: "8px",
-              fontSize: "22px",
-              fontWeight: "bold",
-            }}
-          >
-            {tercero.puntos} pts
-          </div>
-        </div>
-      )}
+      ))}
     </div>
   );
 }
