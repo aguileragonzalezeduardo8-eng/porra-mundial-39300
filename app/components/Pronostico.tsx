@@ -282,6 +282,10 @@ export default function Pronostico({
             border:
               "1px solid #ccc",
             borderRadius: "6px",
+            color: "#111827",
+fontWeight: "bold",
+fontSize: "18px",
+textAlign: "center",
           }}
         />
 
@@ -300,6 +304,10 @@ export default function Pronostico({
             border:
               "1px solid #ccc",
             borderRadius: "6px",
+            color: "#111827",
+fontWeight: "bold",
+fontSize: "18px",
+textAlign: "center",
           }}
         />
       </div>
