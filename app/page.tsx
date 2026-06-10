@@ -6,6 +6,8 @@ import Hero from "./components/Hero";
 import Top3 from "./components/Top3";
 import PartidoCard from "./components/PartidoCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const { count } = await supabase
     .from("participantes")
@@ -19,6 +21,10 @@ export default async function Home() {
   const { data: participantes } = await supabase
     .from("participantes")
     .select("*");
+    console.log(
+  "Participantes:",
+  participantes
+);
 
   const { data: pronosticos } = await supabase
     .from("pronosticos")
