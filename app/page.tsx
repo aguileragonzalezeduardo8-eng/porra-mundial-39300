@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "./lib/supabase";
 import Registro from "./components/Registro";
+import PronosticosEspeciales from "./components/PronosticosEspeciales";
 import Hero from "./components/Hero";
 import Top3 from "./components/Top3";
 import PartidoCard from "./components/PartidoCard";
@@ -221,6 +222,8 @@ return (
       />
 
       <Registro />
+
+      <PronosticosEspeciales />
 
       {lider && (
         <div
