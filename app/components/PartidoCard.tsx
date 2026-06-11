@@ -211,7 +211,10 @@ const abierto =
         </div>
       )}
 
-  {true && (
+ {new Date() >=
+  new Date(
+    partido.fecha_partido
+  ) && (
   <div
     style={{
       textAlign: "center",
