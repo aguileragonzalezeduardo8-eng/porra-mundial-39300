@@ -1,26 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 export default function RecuperarPage() {
-  const searchParams =
-    useSearchParams();
-
   useEffect(() => {
-    const id =
-      searchParams.get("id");
-
-    if (!id) return;
-
-    localStorage.setItem(
-      "id",
-      id
+    const params = new URLSearchParams(
+      window.location.search
     );
 
-    window.location.href =
-      "/";
-  }, [searchParams]);
+    const id = params.get("id");
+
+    if (id) {
+      localStorage.setItem("id", id);
+    }
+
+    window.location.href = "/";
+  }, []);
 
   return (
     <main
@@ -30,14 +25,10 @@ export default function RecuperarPage() {
         textAlign: "center",
       }}
     >
-      <h1>
-        🔄 Recuperando acceso...
-      </h1>
+      <h1>🔄 Recuperando acceso...</h1>
 
       <p>
-        Te estamos
-        redirigiendo a la
-        porra.
+        Te estamos redirigiendo a la porra.
       </p>
     </main>
   );
