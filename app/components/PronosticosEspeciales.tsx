@@ -180,16 +180,36 @@ export default function PronosticosEspeciales() {
   const [goleador, setGoleador] = useState("");
   const [mensaje, setMensaje] = useState("");
 
+  const [publicos, setPublicos] = useState([]);
+
   const fechaLimite = new Date(
     "2026-06-11T21:00:00+02:00"
   );
 
-  const cerrado =
-    new Date() >= fechaLimite;
+const cerrado =
+  new Date() >= fechaLimite;
 
-  useEffect(() => {
-    cargar();
-  }, []);
+useEffect(() => {
+  cargar();
+
+ 
+  if (cerrado) {
+    cargarPublicos();
+  }
+}, []);
+
+async function cargarPublicos() {
+  const res = await fetch(
+    "/api/pronosticos-especiales/publicos"
+  );
+
+  if (!res.ok) return;
+
+  const datos = await res.json();
+
+  setPublicos(datos);
+}
+
 
   async function cargar() {
     const participanteId =
@@ -264,10 +284,65 @@ if (res.ok) {
       </h2>
 
       {cerrado ? (
-        <p>
-          🔒 Cerrados
-        </p>
-      ) : (
+  <div>
+  <p
+    style={{
+      fontWeight: "bold",
+      marginBottom: "20px",
+    }}
+  >
+    🔓 Pronósticos especiales públicos
+  </p>
+
+  {publicos.map(
+    (p: any, index) => (
+      <div
+        key={index}
+        style={{
+          border:
+            "1px solid #ddd",
+          borderRadius:
+            "12px",
+          padding: "15px",
+          marginBottom:
+            "12px",
+          background:
+            "white",
+        }}
+      >
+        <div
+          style={{
+            fontWeight:
+              "bold",
+            marginBottom:
+              "6px",
+          }}
+        >
+          👤{" "}
+          {
+            p.participantes
+              ?.nombre
+          }
+        </div>
+
+        <div>
+          🏆 Campeón:
+          {" "}
+          {p.campeon}
+        </div>
+
+        <div>
+          ⚽ Goleador:
+          {" "}
+          {
+            p.maximo_goleador
+          }
+        </div>
+      </div>
+    )
+  )}
+</div>
+) : (
         <>
           <div>
             <label>

@@ -211,6 +211,35 @@ const abierto =
         </div>
       )}
 
+  {true && (
+  <div
+    style={{
+      textAlign: "center",
+      marginBottom: "16px",
+    }}
+  >
+    <a
+      href={`/partido/${partido.id}`}
+      style={{
+        display: "inline-block",
+        padding:
+          "10px 16px",
+        background:
+          "#2563eb",
+        color: "white",
+        textDecoration:
+          "none",
+        borderRadius:
+          "10px",
+        fontWeight:
+          "bold",
+      }}
+    >
+      👥 Ver pronósticos
+    </a>
+  </div>
+)}
+      
       <Pronostico
         partidoId={partido.id}
         estado={partido.estado}

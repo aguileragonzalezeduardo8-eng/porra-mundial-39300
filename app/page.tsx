@@ -30,6 +30,12 @@ export default async function Home() {
     .from("pronosticos")
     .select("*");
 
+    const {
+  data: pronosticosEspeciales,
+} = await supabase
+  .from("pronosticos_especiales")
+  .select("*");
+
   const totalPronosticos =
     pronosticos?.length ?? 0;
 
@@ -137,6 +143,13 @@ export default async function Home() {
   const lider = clasificacion[0];
 
   const ahora = new Date();
+  const aperturaEspeciales =
+  new Date(
+    "2026-06-11T21:00:00+02:00"
+  );
+
+const especialesVisibles =
+  ahora >= aperturaEspeciales;
 
   const partidosPronosticables =
     partidos?.filter((partido) => {
@@ -228,6 +241,89 @@ return (
       />
 
       <Registro />
+      <section
+  style={{
+    marginTop: "40px",
+    marginBottom: "40px",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "28px",
+      fontWeight: "bold",
+      marginBottom: "20px",
+    }}
+  >
+    🏆 Pronósticos especiales
+  </h2>
+
+  {!especialesVisibles ? (
+    <div
+      style={{
+        background: "#f8fafc",
+        border: "1px solid #ddd",
+        borderRadius: "12px",
+        padding: "20px",
+      }}
+    >
+      🔒 Los pronósticos especiales se
+      harán públicos al inicio del
+      Mundial.
+    </div>
+  ) : (
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "12px",
+        overflow: "hidden",
+      }}
+    >
+      {pronosticosEspeciales?.map(
+        (p) => {
+          const participante =
+            participantes?.find(
+              (usuario) =>
+                usuario.id ===
+                p.participante_id
+            );
+
+          return (
+            <div
+              key={p.id}
+              style={{
+                padding: "18px",
+                borderBottom:
+                  "1px solid #eee",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {
+                  participante?.nombre
+                }
+              </div>
+
+              <div>
+                🏆 Campeón: {p.campeon}
+              </div>
+
+              <div>
+                ⚽ Máximo goleador:{" "}
+                {
+                  p.maximo_goleador
+                }
+              </div>
+            </div>
+          );
+        }
+      )}
+    </div>
+  )}
+</section>
 
       <PronosticosEspeciales />
 
