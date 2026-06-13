@@ -4,17 +4,57 @@ import { useEffect } from "react";
 
 export default function RecuperarPage() {
   useEffect(() => {
-    const params = new URLSearchParams(
-      window.location.search
-    );
+    async function recuperar() {
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
 
-    const id = params.get("id");
+      const id =
+        params.get("id");
 
-    if (id) {
-      localStorage.setItem("id", id);
+      if (!id) {
+        window.location.href =
+          "/";
+        return;
+      }
+
+      localStorage.setItem(
+        "id",
+        id
+      );
+
+      try {
+        const respuesta =
+          await fetch(
+            "/api/participantes"
+          );
+
+        const participantes =
+          await respuesta.json();
+
+        const usuario =
+          participantes.find(
+            (p: any) =>
+              p.id.toString() ===
+              id
+          );
+
+        if (usuario) {
+          localStorage.setItem(
+            "nombre",
+            usuario.nombre
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      window.location.href =
+        "/";
     }
 
-    window.location.href = "/";
+    recuperar();
   }, []);
 
   return (
@@ -25,10 +65,14 @@ export default function RecuperarPage() {
         textAlign: "center",
       }}
     >
-      <h1>🔄 Recuperando acceso...</h1>
+      <h1>
+        🔄 Recuperando acceso...
+      </h1>
 
       <p>
-        Te estamos redirigiendo a la porra.
+        Te estamos
+        redirigiendo a la
+        porra.
       </p>
     </main>
   );
