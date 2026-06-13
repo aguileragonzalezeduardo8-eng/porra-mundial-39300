@@ -116,14 +116,19 @@ const abierto =
           🏷️ Grupo {partido.grupo}
         </span>
 
-        <span>
-          {partido.estado ===
-          "finalizado"
-            ? "🏁 Finalizado"
-            : abierto
-            ? "🔥 Abierto"
-            : "📅 Próximamente"}
-        </span>
+  <span>
+  {partido.estado ===
+  "finalizado"
+    ? "🏁 Finalizado"
+    : abierto
+    ? "🔥 Abierto"
+    : new Date() >=
+      new Date(
+        partido.fecha_partido
+      )
+    ? "🔴 En juego"
+    : "📅 Próximamente"}
+</span>
       </div>
 
       <div
