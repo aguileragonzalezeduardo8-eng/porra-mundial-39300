@@ -222,6 +222,24 @@ return (
         "finalizado"
     ) || [];
 
+    const partidosEnJuego =
+  partidos?.filter((partido) => {
+    if (
+      partido.estado ===
+      "finalizado"
+    ) {
+      return false;
+    }
+
+    const fecha = new Date(
+      partido.fecha_partido
+    );
+
+    return ahora >= fecha;
+  }) || [];
+
+    
+  
   return (
     <main
       style={{
@@ -568,6 +586,36 @@ return (
           marginTop: "50px",
         }}
       >
+       
+        <h2
+  style={{
+    fontSize: "28px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  }}
+>
+  🔴 En juego
+</h2>
+
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(320px, 1fr))",
+    gap: "20px",
+    marginBottom: "50px",
+  }}
+>
+  {partidosEnJuego.map(
+    (partido) => (
+      <PartidoCard
+        key={partido.id}
+        partido={partido}
+      />
+    )
+  )}
+</div>
+       
         <h2
           style={{
             fontSize: "28px",
@@ -644,17 +692,17 @@ return (
           )}
         </div>
 
-        <h2
-          style={{
-            fontSize: "28px",
-            fontWeight:
-              "bold",
-            marginBottom:
-              "20px",
-          }}
-        >
-          🏁 Finalizados
-        </h2>
+       
+
+<h2
+  style={{
+    fontSize: "28px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  }}
+>
+  🏁 Finalizados
+</h2>
 
         <div
           style={{
