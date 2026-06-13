@@ -5,53 +5,52 @@ import { useEffect } from "react";
 export default function RecuperarPage() {
   useEffect(() => {
     async function recuperar() {
-      const params =
-        new URLSearchParams(
-          window.location.search
-        );
+      const params = new URLSearchParams(
+        window.location.search
+      );
 
-      const id =
-        params.get("id");
+      const id = params.get("id");
 
       if (!id) {
-        window.location.href =
-          "/";
+        window.location.href = "/";
         return;
       }
 
-      localStorage.setItem(
-        "id",
-        id
-      );
-
       try {
-        const respuesta =
-          await fetch(
-            "/api/participantes"
-          );
+        const respuesta = await fetch(
+          "/api/participantes"
+        );
 
         const participantes =
           await respuesta.json();
 
-        const usuario =
+        const participante =
           participantes.find(
             (p: any) =>
-              p.id.toString() ===
-              id
+              String(p.id) === id
           );
 
-        if (usuario) {
+        if (participante) {
+          localStorage.setItem(
+            "id",
+            participante.id.toString()
+          );
+
           localStorage.setItem(
             "nombre",
-            usuario.nombre
+            participante.nombre
+          );
+
+          localStorage.setItem(
+            "token",
+            participante.token
           );
         }
       } catch (error) {
         console.error(error);
       }
 
-      window.location.href =
-        "/";
+      window.location.href = "/";
     }
 
     recuperar();
@@ -65,13 +64,10 @@ export default function RecuperarPage() {
         textAlign: "center",
       }}
     >
-      <h1>
-        🔄 Recuperando acceso...
-      </h1>
+      <h1>🔄 Recuperando acceso...</h1>
 
       <p>
-        Te estamos
-        redirigiendo a la
+        Te estamos redirigiendo a la
         porra.
       </p>
     </main>
