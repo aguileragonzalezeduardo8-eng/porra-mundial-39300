@@ -167,9 +167,9 @@ const especialesVisibles =
       const apertura =
         new Date(fecha);
 
-      apertura.setDate(
-        apertura.getDate() - 1
-      );
+apertura.setDate(
+  apertura.getDate() - 2
+);
 apertura.setHours(
   0,
   0,
@@ -200,9 +200,9 @@ apertura.setHours(
       const apertura =
         new Date(fecha);
 
-      apertura.setDate(
-        apertura.getDate() - 1
-      );
+apertura.setDate(
+  apertura.getDate() - 2
+);
 apertura.setHours(
   0,
   0,

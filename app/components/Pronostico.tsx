@@ -147,7 +147,7 @@ export default function Pronostico({
   const fechaApertura = new Date(fecha);
 
   fechaApertura.setDate(
-    fechaApertura.getDate() - 1
+    fechaApertura.getDate() - 2
   );
 
   fechaApertura.setHours(
@@ -229,7 +229,7 @@ export default function Pronostico({
       >
         📅{" "}
         <strong>
-          Disponible desde el día anterior
+          Disponible desde dos días antes
         </strong>
       </div>
     );

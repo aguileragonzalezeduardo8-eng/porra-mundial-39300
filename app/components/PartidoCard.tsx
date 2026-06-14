@@ -72,11 +72,11 @@ export default function PartidoCard({
     partido.fecha_partido
   );
 
-  const apertura = new Date(fecha);
+const apertura = new Date(fecha);
 
-  apertura.setDate(
-    apertura.getDate() - 1
-  );
+apertura.setDate(
+  apertura.getDate() - 2
+);
 
   const ahora = new Date();
 
@@ -212,7 +212,7 @@ const abierto =
             ? `⏳ Cierra en ${tiempoRestante(
                 partido.fecha_partido
               )}`
-            : "📅 Se abrirá 24h antes"}
+            : "📅 Se abrirá 48h antes"}
         </div>
       )}
 
