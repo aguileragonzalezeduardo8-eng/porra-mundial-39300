@@ -265,15 +265,21 @@ return (
     marginBottom: "40px",
   }}
 >
-  <h2
+  <details
+  style={{
+    marginBottom: "20px",
+  }}
+>
+  <summary
     style={{
       fontSize: "28px",
       fontWeight: "bold",
+      cursor: "pointer",
       marginBottom: "20px",
     }}
   >
-    🏆 Pronósticos especiales
-  </h2>
+    🏆 Ver todos los pronósticos especiales
+  </summary>
 
   {!especialesVisibles ? (
     <div
@@ -341,10 +347,10 @@ return (
       )}
     </div>
   )}
+  </details>
 </section>
 
-      <PronosticosEspeciales />
-
+  
       {lider && (
         <div
           style={{
