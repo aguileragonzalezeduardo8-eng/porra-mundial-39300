@@ -26,9 +26,31 @@ export default async function Home() {
   participantes
 );
 
-  const { data: pronosticos } = await supabase
-    .from("pronosticos")
-    .select("*");
+const {
+  data: pronosticos,
+  count: totalPronosticosReal,
+  error,
+} = await supabase
+  .from("pronosticos")
+  .select("*", {
+    count: "exact",
+  })
+  .range(0, 2000);
+
+console.log(
+  "ERROR:",
+  error
+);
+
+console.log(
+  "TOTAL REAL:",
+  totalPronosticosReal
+);
+
+console.log(
+  "TOTAL CARGADOS:",
+  pronosticos?.length
+);
 
     const {
   data: pronosticosEspeciales,
@@ -36,8 +58,13 @@ export default async function Home() {
   .from("pronosticos_especiales")
   .select("*");
 
-  const totalPronosticos =
-    pronosticos?.length ?? 0;
+const totalPronosticos =
+  totalPronosticosReal ?? 0;
+
+    console.log(
+  "TOTAL PRONOSTICOS:",
+  pronosticos?.length
+);
 
   const totalPartidosFinalizados =
     partidos?.filter(
