@@ -217,53 +217,67 @@ console.log(
           📝 Pronósticos
         </h2>
 
-        {pronosticos?.map(
-          (pronostico) => {
-            const partido =
-              partidos?.find(
-                (p) =>
-                  p.id ===
-                  pronostico.partido_id
-              );
+        {pronosticos
+  ?.filter((pronostico) => {
+    const partido =
+      partidos?.find(
+        (p) =>
+          p.id ===
+          pronostico.partido_id
+      );
 
-            return (
-              <div
-                key={
-                  pronostico.id
-                }
-                style={{
-                  border:
-                    "1px solid #eee",
-                  borderRadius:
-                    "8px",
-                  padding:
-                    "12px",
-                  marginTop:
-                    "10px",
-                }}
-              >
-                <strong>
-                  {partido?.equipo_local}{" "}
-                  vs{" "}
-                  {
-                    partido?.equipo_visitante
-                  }
-                </strong>
+    return (
+      partido?.estado ===
+        "en_juego" ||
+      partido?.estado ===
+        "finalizado"
+    );
+  })
+  .map((pronostico) => {
+    const partido =
+      partidos?.find(
+        (p) =>
+          p.id ===
+          pronostico.partido_id
+      );
 
-                <div>
-                  Pronóstico:{" "}
-                  {
-                    pronostico.goles_local
-                  }
-                  -
-                  {
-                    pronostico.goles_visitante
-                  }
-                </div>
-              </div>
-            );
+    return (
+      <div
+        key={
+          pronostico.id
+        }
+        style={{
+          border:
+            "1px solid #eee",
+          borderRadius:
+            "8px",
+          padding:
+            "12px",
+          marginTop:
+            "10px",
+        }}
+      >
+        <strong>
+          {partido?.equipo_local}{" "}
+          vs{" "}
+          {
+            partido?.equipo_visitante
           }
-        )}
+        </strong>
+
+        <div>
+          Pronóstico:{" "}
+          {
+            pronostico.goles_local
+          }
+          -
+          {
+            pronostico.goles_visitante
+          }
+        </div>
+      </div>
+    );
+  })}
       </div>
     </main>
   );
