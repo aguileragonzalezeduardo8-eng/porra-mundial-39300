@@ -4,7 +4,7 @@ export const banderas: Record<string, string> = {
   "Alemania": "🇩🇪",
   "Italia": "🇮🇹",
   "Portugal": "🇵🇹",
-  "Inglaterra": "🏴",
+  "Inglaterra": "🇬🇧",
   "Países Bajos": "🇳🇱",
   "Bélgica": "🇧🇪",
   "Croacia": "🇭🇷",
@@ -42,13 +42,19 @@ export const banderas: Record<string, string> = {
 
   "Turquía": "🇹🇷",
   "Costa de Marfil": "🇨🇮",
-  "Escocia": "🏴",
+  "Escocia": "🇬🇧",
   "Bosnia y Herzegovina": "🇧🇦",
   "Curazao": "🇨🇼",
   "Uzbekistán": "🇺🇿",
   "RD Congo": "🇨🇩",
   "Haití": "🇭🇹",
-  "Suecia": "🇸🇪"
+  "Suecia": "🇸🇪",
+  "Nueva Zelanda": "🇳🇿",
+"Túnez": "🇹🇳",
+"Panamá": "🇵🇦",
+"Qatar": "🇶🇦",
+"Paraguay": "🇵🇾",
+  
 
   
 };
