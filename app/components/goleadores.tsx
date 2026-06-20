@@ -1,10 +1,10 @@
 export default async function Goleadores() {
-  const respuesta = await fetch(
-    "http://localhost:3000/api/goleadores",
-    {
-      cache: "no-store",
-    }
-  );
+const respuesta = await fetch(
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/goleadores`,
+  {
+    cache: "no-store",
+  }
+);
 
   const datos = await respuesta.json();
 
