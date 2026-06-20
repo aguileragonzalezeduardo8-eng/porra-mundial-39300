@@ -5,6 +5,7 @@ import PronosticosEspeciales from "./components/PronosticosEspeciales";
 import Hero from "./components/Hero";
 import Top3 from "./components/Top3";
 import PartidoCard from "./components/PartidoCard";
+import Goleadores from "./components/goleadores";
 
 export const dynamic = "force-dynamic";
 
@@ -377,8 +378,9 @@ return (
   </details>
 </section>
 
-  
-      {lider && (
+<Goleadores />
+
+{lider && (
         <div
           style={{
             background:
