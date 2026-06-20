@@ -38,6 +38,66 @@ const partidoEmpezado =
       partido.fecha_partido
     );
 
+    const pronosticosOrdenados =
+  [...(pronosticos || [])].sort(
+    (a, b) => {
+
+      if (
+        partido?.estado !==
+        "finalizado"
+      ) {
+        return 0;
+      }
+
+      const calcularValor = (
+        pronostico: any
+      ) => {
+
+        const exacto =
+          pronostico.goles_local ===
+            partido.goles_local &&
+          pronostico.goles_visitante ===
+            partido.goles_visitante;
+
+        if (exacto) {
+          return 3;
+        }
+
+        const signoReal =
+          partido.goles_local >
+          partido.goles_visitante
+            ? "1"
+            : partido.goles_local <
+              partido.goles_visitante
+            ? "2"
+            : "X";
+
+        const signoPron =
+          pronostico.goles_local >
+          pronostico.goles_visitante
+            ? "1"
+            : pronostico.goles_local <
+              pronostico.goles_visitante
+            ? "2"
+            : "X";
+
+        if (
+          signoReal ===
+          signoPron
+        ) {
+          return 2;
+        }
+
+        return 1;
+      };
+
+      return (
+        calcularValor(b) -
+        calcularValor(a)
+      );
+    }
+  );
+
   return (
   <main
     style={{
@@ -84,13 +144,72 @@ const partidoEmpezado =
     empiece el partido.
   </div>
 ) : (
-  pronosticos?.map((p) => {
+pronosticosOrdenados.map((p) => {
     const participante =
       participantes?.find(
         (part) =>
           part.id ===
           p.participante_id
       );
+
+let fondo = "white";
+let textoResultado = "";
+let puntos = 0;
+
+if (
+  partido?.estado ===
+  "finalizado"
+) {
+  const realLocal =
+    partido.goles_local;
+
+  const realVisitante =
+    partido.goles_visitante;
+
+  const exacto =
+    p.goles_local ===
+      realLocal &&
+    p.goles_visitante ===
+      realVisitante;
+
+  const signoReal =
+    realLocal >
+    realVisitante
+      ? "1"
+      : realLocal <
+        realVisitante
+      ? "2"
+      : "X";
+
+  const signoPron =
+    p.goles_local >
+    p.goles_visitante
+      ? "1"
+      : p.goles_local <
+        p.goles_visitante
+      ? "2"
+      : "X";
+
+  if (exacto) {
+    fondo = "#dcfce7";
+    textoResultado =
+      "🎯 Exacto";
+    puntos = 5;
+  } else if (
+    signoReal ===
+    signoPron
+  ) {
+    fondo = "#fef9c3";
+    textoResultado =
+      "⚽ Signo";
+    puntos = 2;
+  } else {
+    fondo = "white";
+    textoResultado =
+      "❌ Fallo";
+    puntos = 0;
+  }
+}
 
 return (
   <div
@@ -102,8 +221,7 @@ return (
         "12px",
       padding: "12px",
       marginBottom: "10px",
-      background:
-        "white",
+      background: fondo,
       display: "flex",
       justifyContent:
         "space-between",
@@ -112,10 +230,29 @@ return (
     }}
   >
     <div>
-      👤{" "}
-      {
-        participante?.nombre
-      }
+      <div>
+        👤{" "}
+        {
+          participante?.nombre
+        }
+      </div>
+
+      {partido?.estado ===
+        "finalizado" && (
+        <div
+          style={{
+            marginTop:
+              "4px",
+            fontSize:
+              "14px",
+            fontWeight:
+              "bold",
+          }}
+        >
+          {textoResultado} (
+          +{puntos})
+        </div>
+      )}
     </div>
 
     <div
