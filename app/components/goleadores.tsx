@@ -1,7 +1,11 @@
 export default async function Goleadores() {
 const respuesta = await fetch(
-  `${process.env.NEXT_PUBLIC_SITE_URL}/api/goleadores`,
+  "https://api.football-data.org/v4/competitions/WC/scorers",
   {
+    headers: {
+      "X-Auth-Token":
+        process.env.FOOTBALL_DATA_API_KEY!,
+    },
     cache: "no-store",
   }
 );
