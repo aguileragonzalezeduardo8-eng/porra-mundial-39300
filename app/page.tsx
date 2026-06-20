@@ -170,6 +170,114 @@ const totalPronosticos =
 
   const lider = clasificacion[0];
 
+const reyExactos =
+  [...clasificacion].sort(
+    (a, b) => b.exactos - a.exactos
+  )[0];
+
+const reySignos =
+  [...clasificacion].sort(
+    (a, b) => b.signos - a.signos
+  )[0];
+
+const ultimos10Partidos =
+  partidos
+    ?.filter(
+      (p) =>
+        p.estado ===
+        "finalizado"
+    )
+    .sort(
+      (a, b) =>
+        new Date(
+          b.fecha_partido
+        ).getTime() -
+        new Date(
+          a.fecha_partido
+        ).getTime()
+    )
+    .slice(0, 10) || [];
+
+const mejorRacha =
+  clasificacion
+    .map((participante) => {
+      let puntosRacha = 0;
+
+      const pronosticosJugador =
+        pronosticos?.filter(
+          (p) =>
+            p.participante_id ===
+            participante.id
+        ) || [];
+
+      ultimos10Partidos.forEach(
+        (partido) => {
+          const pronostico =
+            pronosticosJugador.find(
+              (p) =>
+                p.partido_id ===
+                partido.id
+            );
+
+          if (!pronostico) {
+            return;
+          }
+
+          const realLocal =
+            partido.goles_local;
+
+          const realVisitante =
+            partido.goles_visitante;
+
+          if (
+            realLocal ===
+              pronostico.goles_local &&
+            realVisitante ===
+              pronostico.goles_visitante
+          ) {
+            puntosRacha += 5;
+            return;
+          }
+
+          const signoReal =
+            realLocal >
+            realVisitante
+              ? "1"
+              : realLocal <
+                realVisitante
+              ? "2"
+              : "X";
+
+          const signoPron =
+            pronostico.goles_local >
+            pronostico.goles_visitante
+              ? "1"
+              : pronostico.goles_local <
+                pronostico.goles_visitante
+              ? "2"
+              : "X";
+
+          if (
+            signoReal ===
+            signoPron
+          ) {
+            puntosRacha += 2;
+          }
+        }
+      );
+
+      return {
+        nombre:
+          participante.nombre,
+        puntosRacha,
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.puntosRacha -
+        a.puntosRacha
+    )[0];
+
   const ahora = new Date();
   const aperturaEspeciales =
   new Date(
@@ -449,6 +557,57 @@ return (
           marginTop: "40px",
         }}
       >
+        <div
+  style={{
+    background: "#f8fafc",
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    padding: "20px",
+    marginBottom: "25px",
+  }}
+>
+  <h2
+    style={{
+      marginTop: 0,
+      marginBottom: "15px",
+    }}
+  >
+    🏅 Distinciones
+  </h2>
+
+  <div>
+    🎯 Más exactos:{" "}
+    <strong>
+      {reyExactos?.nombre}
+    </strong>{" "}
+    ({reyExactos?.exactos})
+  </div>
+
+  <div
+    style={{
+      marginTop: "8px",
+    }}
+  >
+    ⚽ Más signos:{" "}
+    <strong>
+      {reySignos?.nombre}
+    </strong>{" "}
+    ({reySignos?.signos})
+  </div>
+
+  <div
+  style={{
+    marginTop: "8px",
+  }}
+>
+  🔥 Mejor racha:{" "}
+  <strong>
+    {mejorRacha?.nombre}
+  </strong>{" "}
+  ({mejorRacha?.puntosRacha} pts en los últimos 10 partidos)
+</div>
+</div>
+        
         <h2
           style={{
             fontSize: "28px",
@@ -643,10 +802,11 @@ return (
 >
   {partidosEnJuego.map(
     (partido) => (
-      <PartidoCard
-        key={partido.id}
-        partido={partido}
-      />
+<PartidoCard
+  key={partido.id}
+  partido={partido}
+  pronosticos={pronosticos}
+/>
     )
   )}
 </div>
@@ -677,14 +837,11 @@ return (
             (
               partido
             ) => (
-              <PartidoCard
-                key={
-                  partido.id
-                }
-                partido={
-                  partido
-                }
-              />
+<PartidoCard
+  key={partido.id}
+  partido={partido}
+  pronosticos={pronosticos}
+/>
             )
           )}
         </div>
@@ -715,14 +872,11 @@ return (
             (
               partido
             ) => (
-              <PartidoCard
-                key={
-                  partido.id
-                }
-                partido={
-                  partido
-                }
-              />
+<PartidoCard
+  key={partido.id}
+  partido={partido}
+  pronosticos={pronosticos}
+/>
             )
           )}
         </div>
@@ -751,14 +905,11 @@ return (
             (
               partido
             ) => (
-              <PartidoCard
-                key={
-                  partido.id
-                }
-                partido={
-                  partido
-                }
-              />
+<PartidoCard
+  key={partido.id}
+  partido={partido}
+  pronosticos={pronosticos}
+/>
             )
           )}
         </div>

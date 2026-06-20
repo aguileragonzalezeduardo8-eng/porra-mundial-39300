@@ -3,8 +3,10 @@ import { banderas } from "./banderas";
 
 export default function PartidoCard({
   partido,
+  pronosticos,
 }: {
   partido: any;
+pronosticos: any[] | null;
 }) {
 
   function formatearFecha(fecha: string) {
@@ -88,6 +90,77 @@ const abierto =
   ahora < fecha &&
   partido.estado !== "finalizado";
 
+  const pronosticosPartido =
+  pronosticos?.filter(
+    (p) =>
+      p.partido_id === partido.id
+  ) || [];
+
+let exactos = 0;
+let signos = 0;
+
+const contadorResultados:
+  Record<string, number> = {};
+
+pronosticosPartido.forEach(
+  (p) => {
+    const resultado =
+      `${p.goles_local}-${p.goles_visitante}`;
+
+    contadorResultados[
+      resultado
+    ] =
+      (contadorResultados[
+        resultado
+      ] || 0) + 1;
+
+    if (
+      partido.estado ===
+      "finalizado"
+    ) {
+      if (
+        p.goles_local ===
+          partido.goles_local &&
+        p.goles_visitante ===
+          partido.goles_visitante
+      ) {
+        exactos++;
+      } else {
+        const signoReal =
+          partido.goles_local >
+          partido.goles_visitante
+            ? "1"
+            : partido.goles_local <
+              partido.goles_visitante
+            ? "2"
+            : "X";
+
+        const signoPron =
+          p.goles_local >
+          p.goles_visitante
+            ? "1"
+            : p.goles_local <
+              p.goles_visitante
+            ? "2"
+            : "X";
+
+        if (
+          signoReal ===
+          signoPron
+        ) {
+          signos++;
+        }
+      }
+    }
+  });
+
+const pronosticoPopular =
+  Object.entries(
+    contadorResultados
+  ).sort(
+    (a, b) => b[1] - a[1]
+  )[0];
+
   return (
     <div
       style={{
@@ -168,20 +241,53 @@ const abierto =
 </div>
 
       {partido.estado ===
-        "finalizado" && (
-        <div
-          style={{
-            textAlign: "center",
-            fontSize: "42px",
-            fontWeight: "bold",
-            marginBottom: "16px",
-            color: "#111827",
-          }}
-        >
-          {partido.goles_local} -{" "}
-          {partido.goles_visitante}
+  "finalizado" && (
+  <>
+    <div
+      style={{
+        textAlign: "center",
+        fontSize: "42px",
+        fontWeight: "bold",
+        marginBottom: "12px",
+        color: "#111827",
+      }}
+    >
+      {partido.goles_local} -{" "}
+      {partido.goles_visitante}
+    </div>
+
+    <div
+      style={{
+        textAlign: "center",
+        marginBottom: "16px",
+        fontSize: "14px",
+        color: "#374151",
+      }}
+    >
+      {pronosticoPopular && (
+        <div>
+          👥 Más votado:{" "}
+          <strong>
+            {pronosticoPopular[0]}
+          </strong>{" "}
+          ({pronosticoPopular[1]} usuarios)
         </div>
       )}
+
+      <div
+        style={{
+          marginTop: "6px",
+        }}
+      >
+        🏆 {exactos} exactos
+      </div>
+
+      <div>
+        🎯 {signos} signos
+      </div>
+    </div>
+  </>
+)}
 
       <div
         style={{

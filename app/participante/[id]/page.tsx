@@ -76,21 +76,22 @@ console.log(
   let signos = 0;
 
   pronosticos?.forEach(
-    (pronostico) => {
-      const partido =
-        partidos?.find(
-          (p) =>
-            p.id ===
-            pronostico.partido_id
-        );
+  (pronostico) => {
+    const partido =
+      partidos?.find(
+        (p) =>
+          p.id ===
+          pronostico.partido_id
+      );
 
-      if (
-        !partido ||
-        partido.estado !==
-          "finalizado"
-      ) {
-        return;
-      }
+    if (
+      !partido ||
+      partido.estado !==
+        "finalizado"
+    ) {
+      return;
+    }
+    
 
       const realLocal =
         partido.goles_local;
@@ -217,7 +218,7 @@ console.log(
           📝 Pronósticos
         </h2>
 
-        {pronosticos
+  {pronosticos
   ?.filter((pronostico) => {
     const partido =
       partidos?.find(
@@ -226,6 +227,45 @@ console.log(
           pronostico.partido_id
       );
 
+      let resultado = "";
+
+if (
+  partido?.estado === "finalizado"
+) {
+  if (
+    pronostico.goles_local ===
+      partido.goles_local &&
+    pronostico.goles_visitante ===
+      partido.goles_visitante
+  ) {
+    resultado =
+      "🏆 Exacto (+5)";
+  } else {
+    const signoReal =
+      partido.goles_local >
+      partido.goles_visitante
+        ? "1"
+        : partido.goles_local <
+          partido.goles_visitante
+        ? "2"
+        : "X";
+
+    const signoPron =
+      pronostico.goles_local >
+      pronostico.goles_visitante
+        ? "1"
+        : pronostico.goles_local <
+          pronostico.goles_visitante
+        ? "2"
+        : "X";
+
+    resultado =
+      signoReal === signoPron
+        ? "🎯 Signo (+2)"
+        : "❌ Fallado";
+  }
+}
+
     return (
       partido?.estado ===
         "en_juego" ||
@@ -233,13 +273,92 @@ console.log(
         "finalizado"
     );
   })
+  .sort((a, b) => {
+    const partidoA =
+      partidos?.find(
+        (p) =>
+          p.id ===
+          a.partido_id
+      );
+
+    const partidoB =
+      partidos?.find(
+        (p) =>
+          p.id ===
+          b.partido_id
+      );
+
+    return (
+      new Date(
+        partidoA?.fecha_partido ??
+          ""
+      ).getTime() -
+      new Date(
+        partidoB?.fecha_partido ??
+          ""
+      ).getTime()
+    );
+  })
   .map((pronostico) => {
+
     const partido =
       partidos?.find(
         (p) =>
           p.id ===
           pronostico.partido_id
       );
+
+      let resultado = "";
+
+if (
+  partido?.estado ===
+  "finalizado"
+) {
+  const realLocal =
+    partido.goles_local;
+
+  const realVisitante =
+    partido.goles_visitante;
+
+  const pronLocal =
+    pronostico.goles_local;
+
+  const pronVisitante =
+    pronostico.goles_visitante;
+
+  if (
+    realLocal === pronLocal &&
+    realVisitante ===
+      pronVisitante
+  ) {
+    resultado =
+      "🏆 Exacto (+5)";
+  } else {
+    const signoReal =
+      realLocal >
+      realVisitante
+        ? "1"
+        : realLocal <
+          realVisitante
+        ? "2"
+        : "X";
+
+    const signoPron =
+      pronLocal >
+      pronVisitante
+        ? "1"
+        : pronLocal <
+          pronVisitante
+        ? "2"
+        : "X";
+
+    resultado =
+      signoReal ===
+      signoPron
+        ? "🎯 Signo (+2)"
+        : "❌ Fallado";
+  }
+}
 
     return (
       <div
@@ -265,16 +384,30 @@ console.log(
           }
         </strong>
 
-        <div>
-          Pronóstico:{" "}
-          {
-            pronostico.goles_local
-          }
-          -
-          {
-            pronostico.goles_visitante
-          }
-        </div>
+<div>
+  Pronóstico:{" "}
+  {
+    pronostico.goles_local
+  }
+  -
+  {
+    pronostico.goles_visitante
+  }
+</div>
+
+{partido?.estado ===
+  "finalizado" && (
+  <div
+    style={{
+      marginTop: "6px",
+      fontWeight: "bold",
+    }}
+  >
+    {resultado}
+  </div>
+)}
+
+
       </div>
     );
   })}
