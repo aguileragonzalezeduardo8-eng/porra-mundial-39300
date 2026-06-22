@@ -9,6 +9,13 @@ export default function PartidoCard({
 pronosticos: any[] | null;
 }) {
 
+  const totalPronosticos =
+  pronosticos?.filter(
+    (p) =>
+      p.partido_id ===
+      partido.id
+  ).length ?? 0;
+
   function formatearFecha(fecha: string) {
     const d = new Date(fecha);
 
@@ -321,6 +328,21 @@ const pronosticoPopular =
             : "📅 Se abrirá 48h antes"}
         </div>
       )}
+
+      {abierto && (
+  <div
+    style={{
+      textAlign: "center",
+      color: "#6b7280",
+      marginBottom: "16px",
+      fontWeight: "bold",
+    }}
+  >
+    👥 {totalPronosticos}/35
+    participantes ya han
+    pronosticado
+  </div>
+)}
 
  {new Date() >=
   new Date(
