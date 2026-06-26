@@ -35,8 +35,7 @@ const {
   .from("pronosticos")
   .select("*", {
     count: "exact",
-  })
-  .range(0, 2000);
+  });
 
 console.log(
   "ERROR:",
