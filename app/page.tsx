@@ -167,6 +167,194 @@ const totalPronosticos =
     (a, b) => b.puntos - a.puntos
   );
 
+const gruposEliminatorias = [
+  "Dieciseisavos",
+  "Octavos",
+  "Cuartos",
+  "Semifinales",
+  "3º y 4º puesto",
+  "Final",
+];
+
+const clasificacionEliminatorias =
+  participantes?.map((participante) => {
+    let puntos = 0;
+    let exactos = 0;
+    let signos = 0;
+
+    const pronosticosParticipante =
+      pronosticos?.filter(
+        (p) =>
+          p.participante_id ===
+          participante.id
+      ) || [];
+
+    pronosticosParticipante.forEach(
+      (pronostico) => {
+        const partido =
+          partidos?.find(
+            (p) =>
+              p.id ===
+              pronostico.partido_id
+          );
+
+        if (
+          !partido ||
+          partido.estado !==
+            "finalizado" ||
+          !gruposEliminatorias.includes(
+            partido.grupo
+          )
+        ) {
+          return;
+        }
+
+        const realLocal =
+          partido.goles_local;
+
+        const realVisitante =
+          partido.goles_visitante;
+
+        const pronLocal =
+          pronostico.goles_local;
+
+        const pronVisitante =
+          pronostico.goles_visitante;
+
+        if (
+          realLocal === pronLocal &&
+          realVisitante ===
+            pronVisitante
+        ) {
+          puntos += 5;
+          exactos += 1;
+          return;
+        }
+
+        const realSigno =
+          realLocal >
+          realVisitante
+            ? "1"
+            : realLocal <
+              realVisitante
+            ? "2"
+            : "X";
+
+        const pronSigno =
+          pronLocal >
+          pronVisitante
+            ? "1"
+            : pronLocal <
+              pronVisitante
+            ? "2"
+            : "X";
+
+        if (
+          realSigno ===
+          pronSigno
+        ) {
+          puntos += 2;
+          signos += 1;
+        }
+      }
+    );
+
+    const pronosticosEliminatorias =
+      pronosticosParticipante.filter(
+        (pronostico) => {
+          const partido =
+            partidos?.find(
+              (p) =>
+                p.id ===
+                pronostico.partido_id
+            );
+
+          return (
+            partido &&
+            gruposEliminatorias.includes(
+              partido.grupo
+            )
+          );
+        }
+      ).length;
+
+    return {
+      id: participante.id,
+      nombre:
+        participante.nombre,
+      puntos,
+      exactos,
+      signos,
+      pronosticos:
+        pronosticosEliminatorias,
+    };
+  }) || [];
+
+clasificacionEliminatorias.sort(
+  (a, b) => {
+    if (
+      b.puntos !==
+      a.puntos
+    ) {
+      return (
+        b.puntos -
+        a.puntos
+      );
+    }
+
+    if (
+      b.exactos !==
+      a.exactos
+    ) {
+      return (
+        b.exactos -
+        a.exactos
+      );
+    }
+
+    if (
+      b.signos !==
+      a.signos
+    ) {
+      return (
+        b.signos -
+        a.signos
+      );
+    }
+
+    return a.nombre.localeCompare(
+      b.nombre
+    );
+  }
+);
+
+const liderEliminatorias =
+  clasificacionEliminatorias[0];
+
+const reyExactosEliminatorias =
+  [...clasificacionEliminatorias].sort(
+    (a, b) =>
+      b.exactos -
+      a.exactos
+  )[0];
+
+const reySignosEliminatorias =
+  [...clasificacionEliminatorias].sort(
+    (a, b) =>
+      b.signos -
+      a.signos
+  )[0];
+
+const partidosEliminatoriasFinalizados =
+  partidos?.filter(
+    (p) =>
+      gruposEliminatorias.includes(
+        p.grupo
+      ) &&
+      p.estado ===
+        "finalizado"
+  ).length ?? 0;
+
   const lider = clasificacion[0];
 
 const reyExactos =
@@ -703,31 +891,18 @@ return (
   </div>
 </Link>
 
-                    <div
-                      style={{
-                        marginTop:
-                          "4px",
-                        fontSize:
-                          "13px",
-                        color:
-                          "#666",
-                      }}
-                    >
-                      🎯{" "}
-                      {
-                        usuario.exactos
-                      }{" "}
-                      exactos · ⚽{" "}
-                      {
-                        usuario.signos
-                      }{" "}
-                      signos · 📝{" "}
-                      {
-                        usuario.pronosticos
-                      }{" "}
-                      pronósticos
-                    </div>
-                  </div>
+<div
+  style={{
+    marginTop: "4px",
+    fontSize: "13px",
+    color: "#666",
+  }}
+>
+  🎯 {usuario.exactos} exactos · ⚽{" "}
+  {usuario.signos} signos · 📝{" "}
+  {usuario.pronosticos} pronósticos
+</div>
+</div>
 
                   <div
                     style={{
@@ -773,6 +948,183 @@ return (
           )}
         </div>
       </section>
+
+      <details
+  style={{
+    marginTop: "30px",
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    overflow: "hidden",
+  }}
+>
+  <summary
+    style={{
+      cursor: "pointer",
+      padding: "18px",
+      fontSize: "24px",
+      fontWeight: "bold",
+      background: "#fef3c7",
+      userSelect: "none",
+    }}
+  >
+    🏆 Clasificación de Eliminatorias ▼
+  </summary>
+
+  <div
+  style={{
+    padding: "18px",
+    borderBottom: "1px solid #eee",
+    background: "#fafafa",
+  }}
+>
+  <div
+    style={{
+      color: "#666",
+      fontSize: "14px",
+      marginBottom: "12px",
+    }}
+  >
+    ⚽ Se han disputado{" "}
+    {partidosEliminatoriasFinalizados} de
+    32 partidos.
+  </div>
+
+  <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    fontSize: "15px",
+    fontWeight: "bold",
+  }}
+>
+  <div>
+    🥇 Líder:
+    <br />
+    {liderEliminatorias?.nombre} (
+    {liderEliminatorias?.puntos} pts)
+  </div>
+
+  <div>
+    🎯 Rey de Exactos:
+    <br />
+    {reyExactosEliminatorias?.nombre} (
+    {reyExactosEliminatorias?.exactos})
+  </div>
+
+  <div>
+    ⚽ Rey de Signos:
+    <br />
+    {reySignosEliminatorias?.nombre} (
+    {reySignosEliminatorias?.signos})
+  </div>
+</div>
+</div>
+
+  {clasificacionEliminatorias.map(
+    (usuario, index) => {
+      let puesto = `${index + 1}`;
+
+      if (index === 0)
+        puesto = "🥇";
+
+      if (index === 1)
+        puesto = "🥈";
+
+      if (index === 2)
+        puesto = "🥉";
+
+      const liderEliminatorias =
+        clasificacionEliminatorias[0];
+
+      const diferencia =
+        liderEliminatorias
+          ? liderEliminatorias.puntos -
+            usuario.puntos
+          : 0;
+
+      return (
+        <div
+          key={usuario.id}
+          style={{
+            display: "flex",
+            justifyContent:
+              "space-between",
+            alignItems:
+              "center",
+            padding: "18px",
+            borderBottom:
+              index !==
+              clasificacionEliminatorias.length - 1
+                ? "1px solid #eee"
+                : "none",
+            background:
+  index === 0
+    ? "#fef3c7"
+    : "#fffaf0",
+          }}
+        >
+          <div>
+            <Link
+              href={`/participante/${usuario.id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {puesto} {usuario.nombre}
+              </div>
+            </Link>
+
+            <div
+  style={{
+    marginTop: "4px",
+    fontSize: "13px",
+    color: "#666",
+  }}
+>
+  🎯 {usuario.exactos} exactos · ⚽{" "}
+  {usuario.signos} signos · 📝{" "}
+  {usuario.pronosticos}/32 pronósticos
+</div>
+          </div>
+
+          <div
+            style={{
+              textAlign: "right",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "22px",
+                fontWeight: "bold",
+              }}
+            >
+              {usuario.puntos} pts
+            </div>
+
+            {index > 0 && (
+              <div
+                style={{
+                  color: "#666",
+                  fontSize: "13px",
+                }}
+              >
+                -{diferencia} del líder
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+  )}
+</details>
 
       <section
         style={{
