@@ -6,6 +6,7 @@ import Hero from "./components/Hero";
 import Top3 from "./components/Top3";
 import PartidoCard from "./components/PartidoCard";
 import Goleadores from "./components/goleadores";
+import MenuNavegacion from "./components/MenuNavegacion";
 
 export const dynamic = "force-dynamic";
 
@@ -576,6 +577,7 @@ return (
   
   return (
     <main
+    id="inicio"
       style={{
         maxWidth: "1100px",
         margin: "0 auto",
@@ -583,17 +585,20 @@ return (
       }}
     >
       <Hero
-        participantes={count ?? 0}
-        pronosticos={
-          totalPronosticos
-        }
-        partidosFinalizados={
-          totalPartidosFinalizados
-        }
-      />
+  participantes={count ?? 0}
+  pronosticos={
+    totalPronosticos
+  }
+  partidosFinalizados={
+    totalPartidosFinalizados
+  }
+/>
 
-      <Registro />
+<MenuNavegacion />
+
+<Registro />
       <section
+      id="especiales"
   style={{
     marginTop: "40px",
     marginBottom: "40px",
@@ -684,7 +689,11 @@ return (
   </details>
 </section>
 
-<Goleadores />
+<section
+  id="goleadores"
+>
+  <Goleadores />
+</section>
 
 {lider && (
         <div
@@ -807,16 +816,17 @@ return (
 </div>
         
         <h2
-          style={{
-            fontSize: "28px",
-            fontWeight:
-              "bold",
-            marginBottom:
-              "20px",
-          }}
-        >
-          📊 Clasificación completa
-        </h2>
+  id="general"
+  style={{
+    fontSize: "28px",
+    fontWeight:
+      "bold",
+    marginBottom:
+      "20px",
+  }}
+>
+  📊 Clasificación completa
+</h2>
 
         <div
           style={{
@@ -969,7 +979,8 @@ return (
   }}
 >
   <summary
-    style={{
+  id="eliminatorias"
+  style={{
       cursor: "pointer",
       padding: "18px",
       fontSize: "24px",
@@ -1144,6 +1155,7 @@ return (
       >
        
         <h2
+  id="enjuego"
   style={{
     fontSize: "28px",
     fontWeight: "bold",
@@ -1174,16 +1186,17 @@ return (
 </div>
        
         <h2
-          style={{
-            fontSize: "28px",
-            fontWeight:
-              "bold",
-            marginBottom:
-              "20px",
-          }}
-        >
-          🔥 Pronosticables ahora
-        </h2>
+  id="pronosticables"
+  style={{
+    fontSize: "28px",
+    fontWeight:
+      "bold",
+    marginBottom:
+      "20px",
+  }}
+>
+  ⏰ Pronosticables ahora
+</h2>
 
         <div
           style={{
@@ -1209,16 +1222,17 @@ return (
         </div>
 
         <h2
-          style={{
-            fontSize: "28px",
-            fontWeight:
-              "bold",
-            marginBottom:
-              "20px",
-          }}
-        >
-          📅 Próximamente
-        </h2>
+  id="proximos"
+  style={{
+    fontSize: "28px",
+    fontWeight:
+      "bold",
+    marginBottom:
+      "20px",
+  }}
+>
+  📅 Próximamente
+</h2>
 
         <div
           style={{
@@ -1246,13 +1260,16 @@ return (
        
 
 <h2
+  id="finalizados"
   style={{
     fontSize: "28px",
-    fontWeight: "bold",
-    marginBottom: "20px",
+    fontWeight:
+      "bold",
+    marginBottom:
+      "20px",
   }}
 >
-  🏁 Finalizados
+  ✅ Finalizados
 </h2>
 
         <div
