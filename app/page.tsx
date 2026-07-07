@@ -169,11 +169,22 @@ const totalPronosticos =
 
 const gruposEliminatorias = [
   "Dieciseisavos",
+  "dieciseisavos",
+
   "Octavos",
+  "octavos",
+
   "Cuartos",
+  "cuartos",
+
   "Semifinales",
+  "semifinales",
+
   "3º y 4º puesto",
+  "3º y 4º Puesto",
+
   "Final",
+  "final",
 ];
 
 const clasificacionEliminatorias =
