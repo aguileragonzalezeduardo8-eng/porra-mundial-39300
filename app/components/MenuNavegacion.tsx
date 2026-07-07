@@ -30,22 +30,29 @@ export default function MenuNavegacion() {
 
   return (
     <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "white",
-        padding: "12px",
-        marginBottom: "25px",
-        borderRadius: "12px",
-        border: "1px solid #ddd",
-        display: "flex",
-        gap: "10px",
-        overflowX: "auto",
-        boxShadow:
-          "0 2px 8px rgba(0,0,0,0.08)",
-      }}
-    >
+  style={{
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
+    background: "white",
+    padding: "12px",
+    marginBottom: "25px",
+    borderRadius: "12px",
+    border: "1px solid #ddd",
+
+    display: "flex",
+    gap: "10px",
+
+    overflowX: "auto",
+    maxWidth: "100%",
+    width: "100%",
+
+    boxSizing: "border-box",
+
+    boxShadow:
+      "0 2px 8px rgba(0,0,0,0.08)",
+  }}
+>
       {botones.map(([texto, id]) => (
         <button
           key={id}
