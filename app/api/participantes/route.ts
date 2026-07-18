@@ -59,14 +59,14 @@ export async function POST(
       .maybeSingle();
 
     if (existente) {
-      return Response.json(
-        {
-          error:
-            "Ya existe un participante con ese nombre",
-        },
-        { status: 409 }
-      );
-    }
+  const { data: participante } = await supabase
+    .from("participantes")
+    .select("*")
+    .eq("id", existente.id)
+    .single();
+
+  return Response.json(participante);
+}
 
     const { data, error } =
       await supabase
